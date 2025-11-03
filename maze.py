@@ -19,7 +19,9 @@ class Maze:
         self.carve_path(grid, 1, 1)
         
         grid[0][0] = 1
+        grid[0][1] = 1
         grid[maze_height - 1][maze_width - 1] = 1
+        grid[maze_height - 1][maze_width - 2] = 1
         
         return grid
     
@@ -55,7 +57,14 @@ class Maze:
 
 
 if __name__ == "__main__":
-    test_maze = Maze(width=10, height=10)
-    for row in test_maze.grid:
-        print(''.join(['#' if cell == 0 else '.' for cell in row]))
-        
+    test_maze = Maze(width=18, height=10)
+    for y, row in enumerate(test_maze.grid):
+        line = ''
+        for x, cell in enumerate(row):
+            if y == 0 and x == 0:
+                line += 'S'  # Start
+            elif y == len(test_maze.grid)-1 and x == len(row)-1:
+                line += 'E'  # End
+            else:
+                line += '#' if cell == 0 else '.'
+        print(line)
