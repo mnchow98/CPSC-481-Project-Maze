@@ -13,7 +13,7 @@ class Player:
 
         # Check bounds and walls
         if 0 <= new_x < len(self.maze.grid[0]) and 0 <= new_y < len(self.maze.grid):
-            if self.maze.grid[new_y][new_x] == 0:
+            if self.maze.grid[new_y][new_x] != 0:
                 self.x = new_x
                 self.y = new_y
 
