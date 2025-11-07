@@ -8,7 +8,7 @@ class Maze:
         self.height = height if height else GRID_HEIGHT
         self.grid = self.generate_maze()
         
-        #self._add_weighted_costs()
+        self.add_weighted_costs()
         
     def generate_maze(self):
         maze_width = self.width if self.width % 2 == 1 else self.width - 1
@@ -41,30 +41,38 @@ class Maze:
                 grid[wall_y][wall_x] = 1
             
                 self.carve_path(grid, new_x, new_y)
+                
+    def add_weighted_costs(self):
+        for y in range(len(self.grid)):
+            for x in range(len(self.grid[0])):
+                if self.grid[y][x] == 1:
+                    rand = random.random()
+                    
+                    if rand < 0.15:
+                        self.grid[y][x] = 5
+                    elif rand < 0.35:
+                        self.grid[y][x] = 3
                     
     def draw(self, surface):
         for y, row in enumerate(self.grid):
             for x, tile in enumerate(row):
-                if tile == 1:
-                    color = "BLACK"
-                elif tile == 2:
-                    color = "GREEN"
+                if tile == 0:
+                    color = BLACK   # Wall
+                elif tile == 1:
+                    color = (200, 255, 200)  # Light green - grass (cheap)
+                elif tile == 3:
+                    color = (139, 90, 43)    # Brown - mud (medium)
+                elif tile == 5:
+                    color = (200, 200, 200)  # Dark gray - rocky (expensive)
                 else:
-                    color = "GRAY"
-
+                    color = BLACK
+                
                 rect = pygame.Rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
                 pygame.draw.rect(surface, color, rect)
 
 
 if __name__ == "__main__":
-    test_maze = Maze(width=18, height=10)
-    for y, row in enumerate(test_maze.grid):
-        line = ''
-        for x, cell in enumerate(row):
-            if y == 0 and x == 0:
-                line += 'S'  # Start
-            elif y == len(test_maze.grid)-1 and x == len(row)-1:
-                line += 'E'  # End
-            else:
-                line += '#' if cell == 0 else '.'
-        print(line)
+    maze = Maze(width=18, height=10)
+    symbols = {0: '#', 1: '.', 3: '~', 5: '^'}  # Different symbols for terrain
+    for row in maze.grid:
+        print(''.join([symbols.get(cell, '?') for cell in row]))
