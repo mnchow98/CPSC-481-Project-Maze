@@ -22,6 +22,8 @@ class Maze:
         grid[0][1] = 1
         grid[maze_height - 1][maze_width - 1] = 1
         grid[maze_height - 1][maze_width - 2] = 1
+
+        self.add_complexity(grid, loop_prob=0.08, extend_prob=0.18, max_extend_len=6)
         
         return grid
     
@@ -41,7 +43,52 @@ class Maze:
                 grid[wall_y][wall_x] = 1
             
                 self.carve_path(grid, new_x, new_y)
-                
+
+    def add_complexity(self, grid, loop_prob=0.08, extend_prob=0.18, max_extend_len=6):
+        height = len(grid)
+        width = len(grid[0])
+
+        for y in range(1, height - 1):
+            for x in range(1, width - 1):
+                if grid[y][x] == 0:
+                    if grid[y][x-1] != 0 and grid[y][x+1] != 0:
+                        if random.random() < loop_prob:
+                            grid[y][x] = 1
+                    elif grid[y-1][x] != 0 and grid[y+1][x] != 0:
+                        if random.random() < loop_prob:
+                            grid[y][x] = 1
+
+        dead_ends = []
+        for y in range(height):
+            for x in range(width):
+                if grid[y][x] != 0:
+                    neighbors = 0
+                    for dx, dy in [(-1,0),(1,0),(0,-1),(0,1)]:
+                        nx, ny = x + dx, y + dy
+                        if 0 <= nx < width and 0 <= ny < height and grid[ny][nx] != 0:
+                            neighbors += 1
+                    if neighbors == 1:
+                        dead_ends.append((x,y))
+
+        for (x, y) in dead_ends:
+            if random.random() >= extend_prob:
+                continue
+            directions = [(-1,0),(1,0),(0,-1),(0,1)]
+            random.shuffle(directions)
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                if not (0 <= nx < width and 0 <= ny < height):
+                    continue
+                if grid[ny][nx] == 0:
+                    length = random.randint(1, max_extend_len)
+                    carved = 0
+                    cx, cy = nx, ny
+                    while carved < length and 0 <= cx < width and 0 <= cy < height and grid[cy][cx] == 0:
+                        grid[cy][cx] = 1
+                        carved += 1
+                        cx += dx
+                        cy += dy
+
     def add_weighted_costs(self):
         for y in range(len(self.grid)):
             for x in range(len(self.grid[0])):
@@ -52,18 +99,40 @@ class Maze:
                         self.grid[y][x] = 5
                     elif rand < 0.35:
                         self.grid[y][x] = 3
-                    
+
+    def get_grid(self):
+        return self.grid
+
+    def get_cost(self, pos):
+        x, y = pos
+        return self.grid[y][x]
+
+    def get_valid_neighbors(self, pos):
+        (x, y) = pos
+        neighbors = []
+        width = len(self.grid[0])
+        height = len(self.grid)
+        if x > 0 and self.grid[y][x-1] != 0:
+            neighbors.append((x-1, y))
+        if x < width - 1 and self.grid[y][x+1] != 0:
+            neighbors.append((x+1, y))
+        if y > 0 and self.grid[y-1][x] != 0:
+            neighbors.append((x, y-1))
+        if y < height - 1 and self.grid[y+1][x] != 0:
+            neighbors.append((x, y+1))
+        return neighbors
+
     def draw(self, surface):
         for y, row in enumerate(self.grid):
             for x, tile in enumerate(row):
                 if tile == 0:
-                    color = BLACK   # Wall
+                    color = BLACK
                 elif tile == 1:
-                    color = (200, 255, 200)  # Light green - grass (cheap)
+                    color = (200, 255, 200)
                 elif tile == 3:
-                    color = (139, 90, 43)    # Brown - mud (medium)
+                    color = (139, 90, 43)
                 elif tile == 5:
-                    color = (200, 200, 200)  # Dark gray - rocky (expensive)
+                    color = (200, 200, 200)
                 else:
                     color = BLACK
                 
@@ -72,7 +141,7 @@ class Maze:
 
 
 if __name__ == "__main__":
-    maze = Maze(width=18, height=10)
-    symbols = {0: '#', 1: '.', 3: '~', 5: '^'}  # Different symbols for terrain
+    maze = Maze(width=39, height=23)
+    symbols = {0: '#', 1: '.', 3: '~', 5: '^'}
     for row in maze.grid:
         print(''.join([symbols.get(cell, '?') for cell in row]))
