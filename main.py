@@ -11,7 +11,10 @@ def draw_foreground_texts(screen, font, lines, padding=8, margin_top=8):
 
     box_rect = pygame.Rect(10, margin_top, width, height)
 
-    pygame.draw.rect(screen, WHITE, box_rect)
+    transparent_surface = pygame.Surface((width, height))
+    transparent_surface.set_alpha(180)
+    transparent_surface.fill(WHITE)
+    screen.blit(transparent_surface, (10, margin_top))
     pygame.draw.rect(screen, BLACK, box_rect, 1)
 
     y = margin_top + padding
