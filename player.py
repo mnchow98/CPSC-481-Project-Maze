@@ -7,6 +7,9 @@ class Player:
         self.y = y
         self.maze = maze
         self.total_cost = 0
+        
+        self.sprite = pygame.image.load('assets/traveler.jpg').convert_alpha()
+        self.sprite = pygame.transform.scale(self.sprite, (TILE_SIZE, TILE_SIZE))
 
     def move(self, dx, dy):
         new_x = self.x + dx
@@ -31,5 +34,4 @@ class Player:
                 self.move(0, 1)
 
     def draw(self, surface):
-        rect = pygame.Rect(self.x * TILE_SIZE, self.y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
-        pygame.draw.rect(surface, BLUE, rect)
+        surface.blit(self.sprite, (self.x * TILE_SIZE, self.y * TILE_SIZE))

@@ -10,6 +10,18 @@ class Maze:
         
         self.add_weighted_costs()
         
+        self.wall_sprite = pygame.image.load('assets/wall.jpg')
+        self.wall_sprite = pygame.transform.scale(self.wall_sprite, (TILE_SIZE, TILE_SIZE))
+        
+        self.grass_sprite = pygame.image.load('assets/grass.jpg')
+        self.grass_sprite = pygame.transform.scale(self.grass_sprite, (TILE_SIZE, TILE_SIZE))
+        
+        self.mud_sprite = pygame.image.load('assets/mud.jpg')
+        self.mud_sprite = pygame.transform.scale(self.mud_sprite, (TILE_SIZE, TILE_SIZE))
+        
+        self.rock_sprite = pygame.image.load('assets/rock.jpg')
+        self.rock_sprite = pygame.transform.scale(self.rock_sprite, (TILE_SIZE, TILE_SIZE))
+        
     def generate_maze(self):
         maze_width = self.width if self.width % 2 == 1 else self.width - 1
         maze_height = self.height if self.height % 2 == 1 else self.height - 1
@@ -126,18 +138,14 @@ class Maze:
         for y, row in enumerate(self.grid):
             for x, tile in enumerate(row):
                 if tile == 0:
-                    color = BLACK
+                    surface.blit(self.wall_sprite, (x * TILE_SIZE, y * TILE_SIZE))
                 elif tile == 1:
-                    color = (200, 255, 200)
+                    surface.blit(self.grass_sprite, (x * TILE_SIZE, y * TILE_SIZE))
                 elif tile == 3:
-                    color = (139, 90, 43)
+                    surface.blit(self.mud_sprite, (x * TILE_SIZE, y * TILE_SIZE))
                 elif tile == 5:
-                    color = (200, 200, 200)
-                else:
-                    color = BLACK
-                
-                rect = pygame.Rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
-                pygame.draw.rect(surface, color, rect)
+                    surface.blit(self.rock_sprite, (x * TILE_SIZE, y * TILE_SIZE))
+
 
 
 if __name__ == "__main__":
