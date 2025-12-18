@@ -7,12 +7,14 @@
 * Compare your path cost against the AI algorithms
 
 ## Setup
-* Download Python: https://www.python.org/
+* Download the latest Python version (3.14.0): https://www.python.org/
     - Make sure Python and pip are installed by opening the terminal and typing the commands, 'python --version' and/or 'pip --version' to ensure installation
 * Download VS Code: https://code.visualstudio.com/download
 * Open VS Code
-* Clone Repository from browser
-* Open a new terminal in VS Code
+* Open a new integrated terminal in VS Code (top bar Terminal > New Terminal)
+* Navigate to your desired directory using standard terminal commands (e.g., cd Documents/CodeProjects)
+* In the terminal, type 'git clone' followed by the repository's URL and press Enter 
 * Download pygame libraries using the command, 'pip install pygame-ce'
     - This is a Community Edition to ensure the most stable version of pygame
 * Click the play button on the top-right corner in main.py to run the program
+    - Must click the play button in **main.py** in order to run the application. Clicking the play button in another .py file **will not work**!
